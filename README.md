@@ -60,14 +60,16 @@ IP 归属地与信誉、DNS、WHOIS、子域名发现、BGP / RPKI、全球延�
 | `GET /api/me` | 访客出口地址 | 本服务器所见 |
 | `GET /api/ip/health?ip=&format=json\|text` | 信誉分 + 风险标记 | Net.Coffee |
 | `GET /api/ip-type/:ip` | hosting / mobile / proxy | ip-api.com |
-| `GET /api/geoip/:ip` | 归属地 | ipwho.is |
-| `GET /api/ip/lookup/:ip` | 多源归属地对比 + RDAP | ipwho.is + ip.sb + RDAP |
+| `GET /api/geoip/:ip` | 归属地（多源回退，首个可用者胜） | ipwho.is → ip.sb → Net.Coffee |
+| `GET /api/ip/lookup/:ip` | 多源归属地对比 + RDAP | ipwho.is + ip.sb + Net.Coffee + RDAP |
 | `GET /api/ip/network/:ip` | 前缀 / ASN / BGP 拓扑 / RPKI / PTR | RIPEstat |
 | `GET /api/whois/lookup/:query` | 域名 / IP / ASN 注册信息 | IANA bootstrap + RDAP |
 | `GET /api/subdomains/:domain` | 子域名发现 | crt.sh 证书日志 |
 | `GET /api/dns/resolve/:name` | 权威 A 记录 | Cloudflare DoH |
 | `GET /api/ping/nodes` · `POST /api/ping/start` · `GET /api/ping/result/:id` | 全球延迟测量 | Globalping |
 | `GET /api/status/:id` · `GET /api/services` | 厂商运行状态 | 各厂商官方状态接口 |
+| `GET /api/cdn/providers` | CDN 厂商清单（单一信息源） | — |
+| `GET /api/cdn/probe` · `GET /api/cdn/probe/:name` | 本服务器命中的 CDN 边缘节点 | 各厂商测试端点 |
 | `GET /api/icons/:domain` | 站点图标 | DuckDuckGo |
 | `GET /api/map/config` | 地图瓦片源 | — |
 
@@ -110,8 +112,12 @@ curl -fsS http://127.0.0.1:20054/healthz
 
 - **crt.sh 会抽**：实测连续请求可能返回 200 / 200 / 404 / 404。子域名查询失败按「源异常」上报，
   不当作「该域名没有子域名」。
-- **ipwho.is / ip.sb 在部分网络不可达**：办公网实测 curl 直连即 `000`。归属地失败时国家留空，
-  不显示错误值。
+- **ipwho.is / ip.sb 在部分网络不可达**：办公网实测 curl 直连即 `000`，生产出口同样连不上，
+  因此 `/api/geoip/:ip` 改为三源顺序回退（见 `geoIpAnySource`）。全部源都失败才报 502，
+  归属地失败时字段留空，不显示错误值。
+- **CDN 厂商的节点标识头不保证存在**：实测 21 个厂商中服务器侧可读 18 个，Bunny Standard 与
+  Tencent EdgeOne 的测试端点本身就不返回节点头 —— 这是端点特性，不是厂商故障，接口按
+  `ok: false` + 原因返回，不当作错误抛出，也不影响同一轮其他厂商的结果。
 - 解析器对未知形状一律报错，**绝不回落成「正常运行」**：状态类接口宁可显示源异常，也不能谎报健康。
 
 ## 明确边界

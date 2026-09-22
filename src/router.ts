@@ -8,6 +8,7 @@
  */
 import { Router } from "express";
 import { getAiStatus } from "./ai-status.js";
+import { CDN_PROVIDERS, probeAllCdn, probeCdnByName } from "./cdn.js";
 import { getCloudStatus } from "./cloud-status.js";
 import { geoIp, geoIpAnySource, secondaryGeo, tertiaryGeo } from "./geo.js";
 import { HttpError, publicIp, target } from "./http.js";
@@ -253,6 +254,32 @@ export function createPublicApiRouter(): Router {
       const icon = await siteIcon(req.params.domain);
       res.setHeader("Cache-Control", "public, max-age=86400");
       res.type(icon.contentType).send(Buffer.from(icon.body));
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  /**
+   * CDN catalogue and this server's own edge-node view.
+   *
+   * The catalogue is published so the board renders one provider list rather than keeping a second
+   * copy; the probe is the server-side view, which the board shows alongside the visitor's own.
+   */
+  router.get("/cdn/providers", (_req, res) => {
+    res.json(CDN_PROVIDERS);
+  });
+
+  router.get("/cdn/probe", async (_req, res, next) => {
+    try {
+      res.json(await probeAllCdn());
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.get("/cdn/probe/:name", async (req, res, next) => {
+    try {
+      res.json(await probeCdnByName(req.params.name));
     } catch (error) {
       next(error);
     }
