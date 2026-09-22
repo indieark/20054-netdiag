@@ -1,0 +1,13 @@
+services:
+  netdiag:
+    build: .
+    image: indieark/netdiag:latest
+    container_name: netdiag
+    restart: unless-stopped
+    ports:
+      - "20054:20054"
+    environment:
+      PORT: 20054
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      TIANDITU_TOKEN: ${TIANDITU_TOKEN:-}
+      SOURCE_CODE_URL: ${SOURCE_CODE_URL:-https://github.com/indieark/20054-netdiag}

@@ -1,0 +1,37 @@
+{
+  "name": "@indieark/netdiag",
+  "version": "0.1.0",
+  "private": false,
+  "license": "AGPL-3.0-only",
+  "description": "公开网络诊断 API 服务（IP / DNS / WHOIS / 子域名 / 全球延迟 / 厂商状态），移植自 zhihui-hu/one-ip",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/indieark/20054-netdiag.git"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "biome check . --diagnostic-level=error",
+    "format": "biome format . --write",
+    "test": "vitest run --passWithNoTests",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "helmet": "^8.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.20.0",
+    "tsx": "^4.20.7",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
+}
