@@ -1,13 +1,23 @@
 services:
   netdiag:
-    build: .
-    image: indieark/netdiag:latest
+    image: ${NETDIAG_IMAGE:-ghcr.io/indieark/netdiag:latest}
+    pull_policy: ${NETDIAG_PULL_POLICY:-always}
     container_name: netdiag
     restart: unless-stopped
-    ports:
-      - "20054:20054"
     environment:
       PORT: 20054
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      # The board proxies `/netdiag` to this service from its own origin, so the browser never sends
+      # a cross-origin request and this may stay empty. Set it only if some other origin must call
+      # netdiag directly.
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
       TIANDITU_TOKEN: ${TIANDITU_TOKEN:-}
       SOURCE_CODE_URL: ${SOURCE_CODE_URL:-https://github.com/indieark/20054-netdiag}
+    networks:
+      - netdiag
+    # No `ports:` on purpose. Consumers join the shared `netdiag` network and reach this service by
+    # its name, so port 20054 is never exposed on the host or to the public.
+
+networks:
+  netdiag:
+    name: ${NETDIAG_NETWORK:-netdiag}
+    # Created by whichever stack comes up first, then shared. Consumers declare it as `external`.
