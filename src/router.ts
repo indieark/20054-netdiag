@@ -9,7 +9,7 @@
 import { Router } from "express";
 import { getAiStatus } from "./ai-status.js";
 import { getCloudStatus } from "./cloud-status.js";
-import { geoIp, secondaryGeo } from "./geo.js";
+import { geoIp, geoIpAnySource, secondaryGeo, tertiaryGeo } from "./geo.js";
 import { HttpError, publicIp, target } from "./http.js";
 import { siteIcon } from "./icons.js";
 import { formatIpHealthText, ipHealth } from "./ip-health.js";
@@ -150,7 +150,7 @@ export function createPublicApiRouter(): Router {
 
   router.get("/geoip/:ip", async (req, res, next) => {
     try {
-      res.json(await geoIp(publicIp(req.params.ip)));
+      res.json(await geoIpAnySource(publicIp(req.params.ip)));
     } catch (error) {
       next(error);
     }
@@ -168,12 +168,13 @@ export function createPublicApiRouter(): Router {
   router.get("/ip/lookup/:ip", async (req, res, next) => {
     try {
       const ip = publicIp(req.params.ip);
-      const [primary, secondary, registration] = await Promise.allSettled([
+      const [primary, secondary, tertiary, registration] = await Promise.allSettled([
         geoIp(ip),
         secondaryGeo(ip),
+        tertiaryGeo(ip),
         lookupRegistration(ip),
       ]);
-      const sources = [primary, secondary].flatMap((result) =>
+      const sources = [primary, secondary, tertiary].flatMap((result) =>
         result.status === "fulfilled" ? [result.value] : [],
       );
       res.json({
