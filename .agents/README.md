@@ -1,11 +1,11 @@
-# `.agent/` — AI 项目规则
+# `.agents/` — AI 项目规则
 
 本目录存放项目级 AI 行为规则。规则用于描述当前项目的长期约束，不替代宿主工具的全局提示词。
 
 ## 目录结构
 
 ```text
-.agent/
+.agents/
 └── rules/
     ├── dev.md
     └── memory.md

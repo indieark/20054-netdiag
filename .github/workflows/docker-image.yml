@@ -11,7 +11,7 @@ on:
       - "plans/**"
       - "docs/**"
       - "references/**"
-      - ".agent/**"
+      - ".agents/**"
       - "LICENSE"
   pull_request:
     paths-ignore:
@@ -19,7 +19,7 @@ on:
       - "plans/**"
       - "docs/**"
       - "references/**"
-      - ".agent/**"
+      - ".agents/**"
       - "LICENSE"
   workflow_dispatch:
 

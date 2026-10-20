@@ -10,7 +10,7 @@
 
 ## IndieArk 工作区约定
 
-- 本项目由 `00000-model/02-项目模板` 初始化；工作区级新建、登记和升格流程以根目录 `.agent/new-project.md` 与 `skills/create-indieark-project/SKILL.md` 为准。
+- 本项目由 `00000-model/02-项目模板` 初始化；工作区级新建、登记和升格流程以根目录 `.agents/new-project.md` 与 `skills/create-indieark-project/SKILL.md` 为准。
 - 开发阶段使用普通项目名；只有完成部署端口核验后，才改为 `2XXXX-name` 并同步 GitHub 与 `PROJECTS.md`。
 - Git 主线统一使用 `main`。
 - `PROJECTS.md` 是本地项目、端口和环境快速索引；业务状态仍以飞书项目表为权威来源。
@@ -28,8 +28,8 @@
 
 | 目录/文件 | 用途 | 默认权限 |
 |---|---|---|
-| `.agent/rules/` | 项目级 AI 规则 | 只读，除非任务要求维护规则 |
-| `.agent/README.md` | `.agent/` 使用说明 | 只读 |
+| `.agents/rules/` | 项目级 AI 规则 | 只读，除非任务要求维护规则 |
+| `.agents/README.md` | `.agents/` 使用说明 | 只读 |
 | `.ai_memory/` | 长期上下文说明或项目维护者确认的记忆文件 | 按项目约定 |
 | `.exp/` | 通用经验文档 | 读写 |
 | `.ui/` | UI/UX 风格说明 | 读写 |
@@ -55,5 +55,5 @@
 - `docs/` 面向当前项目事实，承载结构、运行、接口和长期专题文档。
 - `docs/architecture/source-of-truth.md` 规定同类信息的主维护位置，其他文档只做入口或摘要。
 - `references/` 面向外部资料，记录来源结构、版本、commit、许可和借鉴点；采纳后的当前项目事实应回写到 `docs/` 或源码。
-- `.agent/rules/` 存放稳定、长期、可自动加载的项目规则。
+- `.agents/rules/` 存放稳定、长期、可自动加载的项目规则。
 - `plans/README.md` 是计划索引，新增、移动、归档计划时同步更新；完成后的稳定事实同步到 `docs/`。
