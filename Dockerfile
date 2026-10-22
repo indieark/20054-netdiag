@@ -1,11 +1,11 @@
-FROM node:22-bookworm-slim AS build
+FROM node:22.23.4-bookworm-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.json ./
 RUN npm ci
 COPY src ./src
 RUN npm run build && npm prune --omit=dev
 
-FROM node:22-bookworm-slim AS runtime
+FROM node:22.23.4-bookworm-slim AS runtime
 ENV NODE_ENV=production PORT=20054
 WORKDIR /app
 COPY --from=build /app/node_modules ./node_modules
