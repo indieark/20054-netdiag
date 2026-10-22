@@ -1,6 +1,6 @@
 # 计划文档索引
 
-- [Node.js 2026-10 安全升级](2026-10-22-node-security-upgrade.md) — `[in-progress]`，本地验证通过；已授权第一批提交、CI 与原 Stack 发布。
+- [Node.js 2026-10 安全升级](2026-10-22-node-security-upgrade.md) — `[done]`，CI 与原 Stack 发布完成，安全 Node、健康及配置/数据不变量已核验。
 
 > 单一入口：所有实施计划、设计草案、改进追踪和验收状态都在 `plans/` 目录下管理。当前项目长期事实以 `docs/` 为准。
 
